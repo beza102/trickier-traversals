@@ -51,8 +51,7 @@ public class Traversals {
    */
   public static <T> String buildPostOrderString(TreeNode<T> node) {
     if(node == null) return "";
-    
-    
+  
     return buildPostOrderString(node.left) + buildPostOrderString(node.right) + node.value.toString() ;
   }
 
@@ -65,7 +64,30 @@ public class Traversals {
    * @return a list of node values in a top-to-bottom order, or an empty list if the tree is null
    */
   public static <T> List<T> collectLevelOrderValues(TreeNode<T> node) {
-    return null;
+    List<T> list = new ArrayList<>();
+    if (node == null){
+      return list;
+    }
+
+    Queue<TreeNode<T>> queue = new LinkedList<>();
+    queue.add(node);
+
+    while(!queue.isEmpty()){
+      TreeNode<T> current = queue.poll();
+      list.add(current.value);
+    
+
+    if(current.left !=null){
+      queue.add(current.left);
+    }
+
+    if(current.right !=null){
+      queue.add(current.right);
+    }
+    
+  }
+
+    return list;
   }
 
   /**
@@ -76,7 +98,28 @@ public class Traversals {
    * @return the number of unique values in the tree, or 0 if the tree is null
    */
   public static int countDistinctValues(TreeNode<Integer> node) {
-    return 0;
+    //store unique value
+    Set<Integer> uniqueValues = new HashSet<>();
+
+    //queue for level order
+    Queue<TreeNode<Integer>>queue = new LinkedList<>();
+    queue.add(node);
+
+    while(!queue.isEmpty()){
+      TreeNode<Integer> current = queue.poll();
+
+      //add value to set
+      uniqueValues.add(current.value);
+
+      if(current.left != null){
+        queue.add(current.left);
+      }
+
+      if(current.right !=null){
+        queue.add(current.right);
+      }
+    }
+    return uniqueValues.size();
   }
 
   /**
@@ -88,8 +131,48 @@ public class Traversals {
    * @return true if there exists a strictly increasing root-to-leaf path, false otherwise
    */
   public static boolean hasStrictlyIncreasingPath(TreeNode<Integer> node) {
-    return false;
+    if(node == null){
+      return false;
+    }
+
+     // Stack to keep track of (current node, previous value)
+  Stack<TreeNode<Integer>> stack = new Stack<>();
+  Stack<Integer> prevValues = new Stack<>();
+
+  // Start with root node and lowest possible value
+  stack.push(node);
+  prevValues.push(Integer.MIN_VALUE);
+
+  while (!stack.isEmpty()) {
+    TreeNode<Integer> current = stack.pop();
+    int prev = prevValues.pop();
+
+    if (current.value <= prev) {
+      continue;
+    }
+
+    if (current.left == null && current.right == null) {
+      return true;
+    }
+
+    if (current.right != null) {
+      stack.push(current.right);
+      prevValues.push(current.value);
+    }
+    if (current.left != null) {
+      stack.push(current.left);
+      prevValues.push(current.value);
+    }
   }
+
+  
+  return false;
+}
+
+   
+
+    
+   
 
   // OPTIONAL CHALLENGE
   /**
@@ -103,7 +186,10 @@ public class Traversals {
    * @return true if the trees have the same shape, false otherwise
    */
   public static <T> boolean haveSameShape(TreeNode<T> nodeA, TreeNode<T> nodeB) {
-    return false;
+    if(nodeA == null && nodeB== null) return true;
+    if(nodeA==null || nodeB ==null)return false;
+
+    return haveSameShape(nodeA.left, nodeB.left) && haveSameShape(nodeA.right, nodeB.right);
   }
 
 
